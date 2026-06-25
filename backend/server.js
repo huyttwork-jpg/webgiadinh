@@ -17,10 +17,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Create uploads folder if it doesn't exist
+// Create uploads folder if it doesn't exist (fail-safe for serverless)
 const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+try {
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+} catch (err) {
+  console.warn('Không thể khởi tạo thư mục uploads cục bộ (dự kiến trong môi trường Serverless):', err.message);
 }
 
 // Serve uploaded files
@@ -47,17 +51,40 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// Multer Config for Photo Uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, uniqueSuffix + ext);
-  }
-});
+// Multer Config for Photo Uploads (Dynamic switch: Cloudinary or Local Disk)
+let storage;
+
+if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+  console.log('Thông tin Cloudinary hợp lệ. Sử dụng Cloudinary cho việc lưu trữ ảnh tải lên.');
+  const cloudinary = require('cloudinary').v2;
+  const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+
+  storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'family-album',
+      allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'gif']
+    }
+  });
+} else {
+  console.log('Không tìm thấy cấu hình Cloudinary. Sử dụng bộ nhớ đĩa cục bộ cho ảnh tải lên.');
+  storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const ext = path.extname(file.originalname);
+      cb(null, uniqueSuffix + ext);
+    }
+  });
+}
 
 const upload = multer({
   storage: storage,
@@ -467,12 +494,18 @@ app.post('/api/photos', authenticateToken, upload.single('photo'), async (req, r
       return res.status(400).json({ error: 'Vui lòng chọn ảnh để tải lên.' });
     }
 
-    const relativeUrl = `/uploads/${req.file.filename}`;
+    // Determine target URL dynamically (Cloudinary gives full URL in path, Multer disk gives filename)
+    let imageUrl;
+    if (req.file.path && req.file.path.startsWith('http')) {
+      imageUrl = req.file.path;
+    } else {
+      imageUrl = `/uploads/${req.file.filename}`;
+    }
 
     const result = await query(
       `INSERT INTO photos (url, title, description, category, userId) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
       [
-        relativeUrl, 
+        imageUrl, 
         title ? title.trim() : req.file.originalname, 
         description ? description.trim() : '', 
         category || 'family', 
@@ -482,7 +515,7 @@ app.post('/api/photos', authenticateToken, upload.single('photo'), async (req, r
 
     const newPhoto = {
       id: result.rows[0].id,
-      url: relativeUrl,
+      url: imageUrl,
       title: title ? title.trim() : req.file.originalname,
       description: description ? description.trim() : '',
       category: category || 'family',
@@ -828,13 +861,22 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// Init DB then Start Server
-initDb()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server is running at http://localhost:${PORT}`);
+// Init DB and export/start server (Dynamic Vercel Serverless check)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  initDb()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Server is running at http://localhost:${PORT}`);
+      });
+    })
+    .catch(err => {
+      console.error('Không thể khởi tạo cơ sở dữ liệu khi chạy cục bộ:', err);
     });
-  })
-  .catch(err => {
-    console.error('Failed to initialize database:', err);
+} else {
+  // Trực tiếp khởi chạy kết nối DB bất đồng bộ trong nền dưới môi trường Serverless của Vercel
+  initDb().catch(err => {
+    console.error('Không thể tự động cập nhật cơ sở dữ liệu trên Vercel:', err);
   });
+}
+
+module.exports = app;
