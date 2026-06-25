@@ -1,0 +1,11 @@
+{
+  "name": "web-gia-dinh",
+  "version": "1.0.0",
+  "description": "Album Ảnh Gia Đình",
+  "scripts": {
+    "start": "npm start --prefix backend",
+    "dev": "npm run dev --prefix backend",
+    "dev:frontend": "npx -y serve -l 5000 frontend",
+    "postinstall": "npm install --prefix backend"
+  }
+}

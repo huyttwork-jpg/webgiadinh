@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Album Ảnh Gia Đình - Nơi lưu giữ những khoảnh khắc đáng nhớ và tình yêu thương của cả gia đình">
+    <meta name="theme-color" content="#F59E0B">
+
+    <!-- Open Graph / Facebook / Zalo -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Album Ảnh Gia Đình 💕">
+    <meta property="og:description"
+        content="Nơi lưu giữ những khoảnh khắc hạnh phúc và tình yêu thương của cả gia đình">
+    <meta property="og:image" content="https://picsum.photos/seed/giadinh-og/1200/630">
+
+    <title>Album Ảnh Gia Đình 💕</title>
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Application Scripts Config -->
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-emoji">🏠</div>
+            <p class="loader-text">Đang tải...</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Gia Đình</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#gallery" class="nav-link">📸 Gallery</a></li>
+                <li><a href="#wishes" class="nav-link">💌 Lời Chúc</a></li>
+                <li><a href="#upload" class="nav-link">📤 Đóng Góp</a></li>
+            </ul>
+            <div class="nav-actions">
+                <!-- Authentication Controls -->
+                <button class="btn-auth-nav" id="authBtn">
+                    <i data-lucide="log-in"></i>
+                    <span>Đăng nhập</span>
+                </button>
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <span class="user-greeting">Chào, <strong id="userNameDisplay"></strong>!</span>
+
+                    <div class="notification-container" id="notificationContainer">
+                        <button class="btn-notification" id="notificationBtn" aria-label="Thông báo" title="Thông báo">
+                            <i data-lucide="bell"></i>
+                            <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                        </button>
+                        <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
+                            <div class="notification-dropdown-header">
+                                <h3>Thông báo</h3>
+                                <button class="btn-mark-all-read" id="markAllReadBtn">Đọc tất cả</button>
+                            </div>
+                            <div class="notification-dropdown-list" id="notificationDropdownList">
+                                <div class="notification-empty">Không có thông báo nào</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-profile" id="profileBtn" title="Hồ sơ cá nhân">
+                        <i data-lucide="user"></i>
+                    </button>
+                    <button class="btn-logout" id="logoutBtn" title="Đăng xuất">
+                        <i data-lucide="log-out"></i>
+                    </button>
+                </div>
+
+                <button class="theme-toggle" id="themeToggle" aria-label="Chuyển đổi chế độ tối">
+                    <i data-lucide="sun" class="icon-sun"></i>
+                    <i data-lucide="moon" class="icon-moon"></i>
+                </button>
+                <button class="nav-toggle" id="navToggle" aria-label="Mở menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg">
+            <div class="hero-overlay"></div>
+            <div class="hero-particles" id="heroParticles"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge animate-on-scroll">✨ Kỷ niệm đáng nhớ</div>
+            <h1 class="hero-title animate-on-scroll">
+                Album Ảnh<br>
+                <span class="gradient-text">Gia Đình</span>
+            </h1>
+            <p class="hero-subtitle animate-on-scroll">
+                Nơi lưu giữ những khoảnh khắc hạnh phúc,<br>
+                những nụ cười và tình yêu thương của cả nhà 💕
+            </p>
+            <div class="hero-stats animate-on-scroll">
+                <div class="stat-item">
+                    <span class="stat-number" id="photoCount" data-target="12">0</span>
+                    <span class="stat-label">Bức ảnh</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" id="wishCount" data-target="5">0</span>
+                    <span class="stat-label">Lời chúc</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number" id="memberCount" data-target="8">0</span>
+                    <span class="stat-label">Thành viên</span>
+                </div>
+            </div>
+            <a href="#gallery" class="hero-cta animate-on-scroll">
+                <span>Khám phá ngay</span>
+                <i data-lucide="arrow-down" class="cta-icon"></i>
+            </a>
+        </div>
+        <div class="hero-scroll-indicator">
+            <div class="scroll-mouse">
+                <div class="scroll-wheel"></div>
+            </div>
+            <span>Cuộn xuống</span>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="section gallery-section" id="gallery">
+        <div class="section-wave">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                <path d="M0,64 C480,150 960,-20 1440,64 L1440,0 L0,0 Z"></path>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge">📸 Khoảnh khắc</span>
+                <h2 class="section-title">Bộ Sưu Tập Ảnh</h2>
+                <p class="section-subtitle">Mỗi bức ảnh là một câu chuyện, một kỷ niệm đáng trân trọng</p>
+            </div>
+
+            <!-- Gallery Filters -->
+            <div class="gallery-filters animate-on-scroll" id="galleryFilters">
+                <button class="filter-btn active" data-filter="all">
+                    <i data-lucide="grid-3x3"></i>
+                    <span>Tất cả</span>
+                </button>
+                <button class="filter-btn" data-filter="family">
+                    <i data-lucide="users"></i>
+                    <span>Gia đình</span>
+                </button>
+                <button class="filter-btn" data-filter="travel">
+                    <i data-lucide="plane"></i>
+                    <span>Du lịch</span>
+                </button>
+                <button class="filter-btn" data-filter="birthday">
+                    <i data-lucide="cake"></i>
+                    <span>Sinh nhật</span>
+                </button>
+                <button class="filter-btn" data-filter="daily">
+                    <i data-lucide="heart"></i>
+                    <span>Hàng ngày</span>
+                </button>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Photos rendered by gallery.js -->
+            </div>
+
+            <div class="gallery-empty" id="galleryEmpty" style="display: none;">
+                <i data-lucide="image-off"></i>
+                <p>Chưa có ảnh nào trong danh mục này</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Xem ảnh">
+        <div class="lightbox-overlay" id="lightboxOverlay"></div>
+        <button class="lightbox-close" id="lightboxClose" aria-label="Đóng">
+            <i data-lucide="x"></i>
+        </button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Ảnh trước">
+            <i data-lucide="chevron-left"></i>
+        </button>
+        <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Ảnh tiếp">
+            <i data-lucide="chevron-right"></i>
+        </button>
+        <div class="lightbox-content">
+            <div class="lightbox-left">
+                <img id="lightboxImage" src="" alt="Ảnh gia đình">
+            </div>
+            <div class="lightbox-right">
+                <div class="lightbox-info">
+                    <h3 id="lightboxTitle"></h3>
+                    <p id="lightboxDesc"></p>
+                    <div class="lightbox-meta">
+                        <span class="lightbox-date" id="lightboxDate"></span>
+                        <span class="lightbox-category" id="lightboxCategory"></span>
+                    </div>
+                </div>
+
+                <div class="lightbox-reactions">
+                    <button class="btn-lightbox-react" id="lightboxReactBtn">
+                        <i data-lucide="heart"></i>
+                        <span>Thích</span>
+                    </button>
+                    <span class="lightbox-likes-summary" id="lightboxLikesSummary"></span>
+                </div>
+
+                <div class="lightbox-comments-section">
+                    <h4>Bình luận</h4>
+                    <div class="lightbox-comments-list" id="lightboxCommentsList"></div>
+                    <form class="lightbox-comment-form" id="lightboxCommentForm">
+                        <input type="text" id="lightboxCommentInput" placeholder="Viết bình luận..." required
+                            autocomplete="off">
+                        <button type="submit" class="btn-lightbox-send-comment">
+                            <i data-lucide="send"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishes Section -->
+    <section class="section wishes-section" id="wishes">
+        <div class="section-wave">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                <path d="M0,64 C480,150 960,-20 1440,64 L1440,0 L0,0 Z"></path>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge">💌 Yêu thương</span>
+                <h2 class="section-title">Lời Chúc & Nhắn Nhủ</h2>
+                <p class="section-subtitle">Gửi lời yêu thương đến các thành viên trong gia đình</p>
+            </div>
+
+            <!-- Wish Form -->
+            <div class="wish-form-card animate-on-scroll">
+                <!-- Auth Prompt Overlay -->
+                <div class="auth-prompt-overlay" id="wishAuthPrompt">
+                    <div class="auth-prompt-content">
+                        <i data-lucide="lock" class="prompt-icon"></i>
+                        <h3>Đăng nhập để gửi lời chúc</h3>
+                        <p>Vui lòng đăng nhập tài khoản gia đình để gửi lời nhắn yêu thương.</p>
+                        <button class="btn-primary" onclick="Auth.openModal('login')">
+                            <i data-lucide="log-in"></i>
+                            <span>Đăng nhập ngay</span>
+                        </button>
+                    </div>
+                </div>
+                <form id="wishForm" class="wish-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="wishName">
+                                <i data-lucide="user"></i>
+                                Tên của bạn
+                            </label>
+                            <input type="text" id="wishName" placeholder="VD: Ba Minh" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="wishRelation">
+                                <i data-lucide="heart"></i>
+                                Quan hệ
+                            </label>
+                            <select id="wishRelation">
+                                <option value="Ba">Ba</option>
+                                <option value="Mẹ">Mẹ</option>
+                                <option value="Ông">Ông</option>
+                                <option value="Bà">Bà</option>
+                                <option value="Anh">Anh</option>
+                                <option value="Chị">Chị</option>
+                                <option value="Em">Em</option>
+                                <option value="Cô">Cô</option>
+                                <option value="Chú">Chú</option>
+                                <option value="Dì">Dì</option>
+                                <option value="Bạn bè" selected>Bạn bè</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="wishMessage">
+                            <i data-lucide="message-circle"></i>
+                            Lời nhắn
+                        </label>
+                        <textarea id="wishMessage" rows="4" placeholder="Viết lời chúc, lời nhắn yêu thương của bạn..."
+                            required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Chọn emoji</label>
+                        <div class="emoji-picker" id="emojiPicker">
+                            <button type="button" class="emoji-btn" data-emoji="❤️">❤️</button>
+                            <button type="button" class="emoji-btn" data-emoji="💕">💕</button>
+                            <button type="button" class="emoji-btn" data-emoji="🥰">🥰</button>
+                            <button type="button" class="emoji-btn" data-emoji="😍">😍</button>
+                            <button type="button" class="emoji-btn" data-emoji="🎉">🎉</button>
+                            <button type="button" class="emoji-btn" data-emoji="🎂">🎂</button>
+                            <button type="button" class="emoji-btn" data-emoji="🌸">🌸</button>
+                            <button type="button" class="emoji-btn" data-emoji="⭐">⭐</button>
+                            <button type="button" class="emoji-btn" data-emoji="🙏">🙏</button>
+                            <button type="button" class="emoji-btn" data-emoji="👨‍👩‍👧‍👦">👨‍👩‍👧‍👦</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="wishSubmitBtn">
+                        <i data-lucide="send"></i>
+                        <span>Gửi lời chúc</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Wishes List -->
+            <div class="wishes-grid" id="wishesGrid">
+                <!-- Wishes rendered by wishes.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section class="section upload-section" id="upload">
+        <div class="section-wave">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                <path d="M0,64 C480,150 960,-20 1440,64 L1440,0 L0,0 Z"></path>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-badge">📤 Đóng góp</span>
+                <h2 class="section-title">Thêm Ảnh Kỷ Niệm</h2>
+                <p class="section-subtitle">Chia sẻ những bức ảnh đẹp của bạn với cả gia đình</p>
+            </div>
+
+            <div class="upload-card animate-on-scroll">
+                <!-- Auth Prompt Overlay -->
+                <div class="auth-prompt-overlay" id="uploadAuthPrompt">
+                    <div class="auth-prompt-content">
+                        <i data-lucide="lock" class="prompt-icon"></i>
+                        <h3>Đăng nhập để đóng góp ảnh</h3>
+                        <p>Vui lòng đăng nhập tài khoản gia đình để tải lên những khoảnh khắc kỷ niệm.</p>
+                        <button class="btn-primary" onclick="Auth.openModal('login')">
+                            <i data-lucide="log-in"></i>
+                            <span>Đăng nhập ngay</span>
+                        </button>
+                    </div>
+                </div>
+                <form id="uploadForm" class="upload-form">
+                    <!-- Drop Zone -->
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-zone-content">
+                            <div class="drop-icon">
+                                <i data-lucide="cloud-upload"></i>
+                            </div>
+                            <p class="drop-text">Kéo thả ảnh vào đây</p>
+                            <p class="drop-subtext">hoặc</p>
+                            <label class="btn-browse" for="fileInput">
+                                <i data-lucide="folder-open"></i>
+                                Chọn ảnh từ thiết bị
+                            </label>
+                            <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                            <p class="drop-hint">PNG, JPG, WEBP • Tối đa 5MB mỗi ảnh</p>
+                        </div>
+                    </div>
+
+                    <!-- Preview Area -->
+                    <div class="upload-previews" id="uploadPreviews" style="display: none;">
+                        <h3>
+                            <i data-lucide="images"></i>
+                            Xem trước (<span id="previewCount">0</span> ảnh)
+                        </h3>
+                        <div class="preview-grid" id="previewGrid"></div>
+                    </div>
+
+                    <!-- Upload Info -->
+                    <div class="upload-info" id="uploadInfo" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="uploaderName">
+                                    <i data-lucide="user"></i>
+                                    Người đăng
+                                </label>
+                                <input type="text" id="uploaderName" placeholder="Tên của bạn" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="photoCategory">
+                                    <i data-lucide="tag"></i>
+                                    Danh mục
+                                </label>
+                                <select id="photoCategory">
+                                    <option value="family">Gia đình</option>
+                                    <option value="travel">Du lịch</option>
+                                    <option value="birthday">Sinh nhật</option>
+                                    <option value="daily">Hàng ngày</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="photoDesc">
+                                <i data-lucide="file-text"></i>
+                                Mô tả ảnh
+                            </label>
+                            <input type="text" id="photoDesc" placeholder="VD: Cả nhà đi biển hè 2024">
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="upload-progress" id="uploadProgress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <span class="progress-text" id="progressText">0%</span>
+                        </div>
+
+                        <button type="submit" class="btn-primary btn-upload" id="uploadSubmitBtn">
+                            <i data-lucide="upload"></i>
+                            <span>Tải ảnh lên</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="footer-logo">🏠</span>
+                    <div>
+                        <h3>Album Ảnh Gia Đình</h3>
+                        <p>Nơi lưu giữ yêu thương ❤️</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <a href="#hero">Trang chủ</a>
+                    <a href="#gallery">Gallery</a>
+                    <a href="#wishes">Lời chúc</a>
+                    <a href="#upload">Đóng góp</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Được tạo với 💕 cho gia đình yêu thương • 2026</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Noscript Fallback -->
+    <noscript>
+        <div style="text-align:center; padding:3rem; font-family:sans-serif;">
+            <h2>⚠️ JavaScript bị tắt</h2>
+            <p>Trang web này cần JavaScript để hoạt động. Vui lòng bật JavaScript trong trình duyệt của bạn.</p>
+        </div>
+    </noscript>
+
+    <!-- Auth Cover (Fullscreen Lock Screen) -->
+    <div class="auth-cover" id="authCover" role="dialog" aria-modal="true" aria-label="Đăng nhập hoặc Đăng ký"
+        style="display: flex;">
+        <div class="auth-cover-content">
+            <div class="auth-cover-logo" style="text-align: center; margin-bottom: var(--space-md);">
+                <span style="font-size: 3rem;">🏠</span>
+                <h2
+                    style="font-family: var(--font-display); font-size: var(--font-size-2xl); color: var(--text-primary); margin-top: var(--space-xs);">
+                    Album Ảnh Gia Đình</h2>
+                <p style="font-size: 0.875rem; color: var(--text-secondary);">Vui lòng đăng nhập hoặc đăng ký tài khoản
+                    để tiếp tục</p>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin">Đăng nhập</button>
+                <button class="auth-tab" id="tabRegister">Đăng ký</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="loginUsername">Tên đăng nhập</label>
+                    <input type="text" id="loginUsername" placeholder="Nhập tên đăng nhập..." required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Mật khẩu</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="loginPassword" placeholder="Nhập mật khẩu..." required>
+                        <button type="button" class="btn-toggle-password" title="Hiển thị mật khẩu">
+                            <i data-lucide="eye" class="eye-icon"></i>
+                            <i data-lucide="eye-off" class="eye-off-icon" style="display: none;"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-helper"
+                    style="display: flex; justify-content: flex-end; margin-top: -8px; margin-bottom: 4px;">
+                    <a href="#" class="forgot-link" id="forgotPasswordLink"
+                        style="font-size: 0.85rem; color: var(--primary-500); text-decoration: none;">Quên mật khẩu?</a>
+                </div>
+                <button type="submit" class="btn-primary auth-submit-btn">
+                    <i data-lucide="log-in"></i>
+                    <span>Đăng nhập</span>
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <label for="registerUsername">Tên đăng nhập</label>
+                    <input type="text" id="registerUsername" placeholder="Viết liền không dấu..." required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Mật khẩu</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="registerPassword" placeholder="Mật khẩu bí mật..." required>
+                        <button type="button" class="btn-toggle-password" title="Hiển thị mật khẩu">
+                            <i data-lucide="eye" class="eye-icon"></i>
+                            <i data-lucide="eye-off" class="eye-off-icon" style="display: none;"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="registerFullName">Tên hiển thị</label>
+                    <input type="text" id="registerFullName" placeholder="VD: Ba Minh, Con Út..." required>
+                </div>
+                <div class="form-group">
+                    <label for="registerRelation">Quan hệ</label>
+                    <select id="registerRelation">
+                        <option value="Ba">Ba</option>
+                        <option value="Mẹ">Mẹ</option>
+                        <option value="Ông">Ông</option>
+                        <option value="Bà">Bà</option>
+                        <option value="Anh">Anh</option>
+                        <option value="Chị">Chị</option>
+                        <option value="Em">Em</option>
+                        <option value="Cô">Cô</option>
+                        <option value="Chú">Chú</option>
+                        <option value="Dì">Dì</option>
+                        <option value="Khác" selected>Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="registerPhone">Số điện thoại</label>
+                    <input type="tel" id="registerPhone" placeholder="VD: 0901234567..." required>
+                </div>
+                <button type="submit" class="btn-primary auth-submit-btn">
+                    <i data-lucide="user-plus"></i>
+                    <span>Đăng ký tài khoản</span>
+                </button>
+            </form>
+
+            <!-- Forgot Password Form -->
+            <form id="forgotForm" class="auth-form" style="display: none;">
+                <p class="auth-form-desc"
+                    style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: var(--space-xs);">
+                    Nhập số điện thoại đã đăng ký của bạn để nhận mã OTP khôi phục mật khẩu.</p>
+                <div class="form-group">
+                    <label for="forgotPhone">Số điện thoại</label>
+                    <input type="tel" id="forgotPhone" placeholder="Nhập số điện thoại..." required>
+                </div>
+                <button type="submit" class="btn-primary auth-submit-btn" id="forgotSubmitBtn">
+                    <i data-lucide="send"></i>
+                    <span>Gửi mã OTP</span>
+                </button>
+                <div class="auth-form-footer" style="text-align: center; margin-top: var(--space-sm);">
+                    <a href="#" class="back-link" id="backToLoginFromForgot"
+                        style="font-size: 0.85rem; color: var(--primary-500); text-decoration: none;">Quay lại Đăng
+                        nhập</a>
+                </div>
+            </form>
+
+            <!-- Reset Password Form -->
+            <form id="resetForm" class="auth-form" style="display: none;">
+                <p class="auth-form-desc"
+                    style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: var(--space-xs);">
+                    Mã OTP đã được gửi về số điện thoại của bạn. Vui lòng nhập mã và mật khẩu mới.</p>
+                <div class="form-group">
+                    <label for="resetOtp">Mã OTP (6 chữ số)</label>
+                    <input type="text" id="resetOtp" placeholder="Nhập mã OTP..." required maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="resetPassword">Mật khẩu mới</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="resetPassword" placeholder="Nhập mật khẩu mới..." required>
+                        <button type="button" class="btn-toggle-password" title="Hiển thị mật khẩu">
+                            <i data-lucide="eye" class="eye-icon"></i>
+                            <i data-lucide="eye-off" class="eye-off-icon" style="display: none;"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary auth-submit-btn" id="resetSubmitBtn">
+                    <i data-lucide="key-round"></i>
+                    <span>Xác nhận & Đổi mật khẩu</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="auth-modal" id="profileModal" role="dialog" aria-modal="true" aria-label="Thông tin tài khoản">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" id="profileModalClose" aria-label="Đóng">
+                <i data-lucide="x"></i>
+            </button>
+
+            <h3
+                style="font-family: var(--font-display); font-size: var(--font-size-xl); margin-bottom: var(--space-md); color: var(--text-primary); text-align: center; font-weight: 700;">
+                Hồ sơ cá nhân</h3>
+
+            <form id="profileForm" class="auth-form">
+                <div class="form-group">
+                    <label for="profileUsername">Tên đăng nhập</label>
+                    <input type="text" id="profileUsername" disabled
+                        style="background: var(--bg-tertiary); cursor: not-allowed; opacity: 0.7;">
+                </div>
+                <div class="form-group">
+                    <label for="profileFullName">Tên hiển thị</label>
+                    <input type="text" id="profileFullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="profileRelation">Quan hệ</label>
+                    <select id="profileRelation">
+                        <option value="Ba">Ba</option>
+                        <option value="Mẹ">Mẹ</option>
+                        <option value="Ông">Ông</option>
+                        <option value="Bà">Bà</option>
+                        <option value="Anh">Anh</option>
+                        <option value="Chị">Chị</option>
+                        <option value="Em">Em</option>
+                        <option value="Cô">Cô</option>
+                        <option value="Chú">Chú</option>
+                        <option value="Dì">Dì</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="profilePhone">Số điện thoại</label>
+                    <input type="tel" id="profilePhone" required>
+                </div>
+                <button type="submit" class="btn-primary auth-submit-btn" id="profileSubmitBtn">
+                    <i data-lucide="save"></i>
+                    <span>Lưu thay đổi</span>
+                </button>
+
+                <div
+                    style="border-top: 1px solid var(--border-color); margin-top: var(--space-md); padding-top: var(--space-md);">
+                    <button type="button" class="btn-danger" id="deleteAccountBtn"
+                        style="width: 100%; display: flex; align-items: center; justify-content: center; gap: var(--space-xs); padding: 0.75rem 1rem; border-radius: var(--border-radius-md); background: #ef4444; color: #ffffff; font-weight: 600; cursor: pointer; transition: all var(--transition-base); border: none;">
+                        <i data-lucide="user-x"></i>
+                        <span>Xóa tài khoản vĩnh viễn</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Profile View Modal -->
+    <div class="auth-modal" id="userProfileViewModal" role="dialog" aria-modal="true" aria-label="Hồ sơ thành viên">
+        <div class="auth-modal-content profile-view-content">
+            <button class="auth-modal-close" id="userProfileViewClose" aria-label="Đóng">
+                <i data-lucide="x"></i>
+            </button>
+
+            <!-- Profile Header -->
+            <div class="profile-view-header">
+                <div class="profile-view-avatar" id="upvAvatar">U</div>
+                <div class="profile-view-info">
+                    <h3 id="upvFullName">Tên hiển thị</h3>
+                    <div style="display: flex; align-items: center; gap: var(--space-xs); margin-top: var(--space-xs);">
+                        <span id="upvRelation" class="profile-view-badge">Quan hệ</span>
+                        <span id="upvUsername" class="profile-view-username">@username</span>
+                    </div>
+                    <p id="upvPhone" class="profile-view-phone"
+                        style="margin-top: var(--space-sm); font-size: var(--font-size-sm); color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="phone" style="width: 14px; height: 14px;"></i>
+                        <span>0900000000</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Profile Stats -->
+            <div class="profile-view-stats"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin: var(--space-lg) 0;">
+                <div class="stat-box"
+                    style="background: var(--bg-tertiary); border: 1px solid var(--border-light); padding: var(--space-md); border-radius: var(--border-radius-lg); text-align: center;">
+                    <span class="stat-val" id="upvPhotoCount"
+                        style="display: block; font-size: var(--font-size-2xl); font-weight: 700; color: var(--primary-500);">0</span>
+                    <span class="stat-lbl"
+                        style="font-size: var(--font-size-xs); color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Hình
+                        ảnh đã đăng</span>
+                </div>
+                <div class="stat-box"
+                    style="background: var(--bg-tertiary); border: 1px solid var(--border-light); padding: var(--space-md); border-radius: var(--border-radius-lg); text-align: center;">
+                    <span class="stat-val" id="upvWishCount"
+                        style="display: block; font-size: var(--font-size-2xl); font-weight: 700; color: var(--accent-500);">0</span>
+                    <span class="stat-lbl"
+                        style="font-size: var(--font-size-xs); color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Lời
+                        chúc gửi đi</span>
+                </div>
+            </div>
+
+            <!-- Edit profile button for own profile -->
+            <div id="upvEditSelfContainer" style="display: none; margin-bottom: var(--space-lg);">
+                <button type="button" class="btn-primary" id="upvEditSelfBtn"
+                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: var(--space-xs); padding: 0.75rem 1rem; border-radius: var(--border-radius-md); font-weight: 600;">
+                    <i data-lucide="edit-3"></i>
+                    <span>Chỉnh sửa thông tin cá nhân</span>
+                </button>
+            </div>
+
+            <!-- Profile Tabs -->
+            <div class="profile-view-tabs"
+                style="display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: var(--space-md);">
+                <button class="profile-view-tab active" data-tab="photos" id="upvTabPhotos"
+                    style="flex: 1; padding: var(--space-sm) 0; background: none; border: none; font-weight: 600; font-size: var(--font-size-base); color: var(--text-primary); cursor: pointer; border-bottom: 2px solid var(--primary-500); margin-bottom: -2px; transition: all var(--transition-base);">Ảnh
+                    đã đăng</button>
+                <button class="profile-view-tab" data-tab="wishes" id="upvTabWishes"
+                    style="flex: 1; padding: var(--space-sm) 0; background: none; border: none; font-weight: 600; font-size: var(--font-size-base); color: var(--text-tertiary); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all var(--transition-base);">Lời
+                    chúc</button>
+            </div>
+
+            <!-- Profile Tab Contents -->
+            <div class="profile-view-body" style="max-height: 350px; overflow-y: auto; padding-right: 4px;">
+                <!-- Photos Tab -->
+                <div class="profile-tab-content active" id="upvContentPhotos">
+                    <div class="profile-photos-grid" id="upvPhotosGrid"
+                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <!-- JS renders photos -->
+                    </div>
+                    <p class="profile-empty-msg" id="upvPhotosEmpty"
+                        style="display: none; text-align: center; color: var(--text-tertiary); padding: var(--space-xl) 0; font-style: italic;">
+                        Chưa đăng hình ảnh nào.</p>
+                </div>
+
+                <!-- Wishes Tab -->
+                <div class="profile-tab-content" id="upvContentWishes" style="display: none;">
+                    <div class="profile-wishes-list" id="upvWishesList"
+                        style="display: flex; flex-direction: column; gap: var(--space-md);">
+                        <!-- JS renders wishes -->
+                    </div>
+                    <p class="profile-empty-msg" id="upvWishesEmpty"
+                        style="display: none; text-align: center; color: var(--text-tertiary); padding: var(--space-xl) 0; font-style: italic;">
+                        Chưa gửi lời chúc nào.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/gallery.js"></script>
+    <script src="js/wishes.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
