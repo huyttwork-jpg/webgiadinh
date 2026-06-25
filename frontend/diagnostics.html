@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chẩn đoán hệ thống | Album Gia Đình</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-color: #120f0a;
+            --card-bg: #1e1912;
+            --text-color: #f7f5f0;
+            --text-muted: #a69f92;
+            --accent: #d97706; /* Amber Gold */
+            --accent-hover: #b45309;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --border: #2e261b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header h1 i {
+            color: var(--accent);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        .card {
+            background: rgba(18, 15, 10, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .status-badge.success {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .status-badge.danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .status-badge.warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(46, 38, 27, 0.5);
+            padding-bottom: 0.5rem;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+        }
+
+        .detail-value {
+            font-weight: 500;
+            font-family: monospace;
+        }
+
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            word-break: break-all;
+            margin-top: 0.5rem;
+        }
+
+        .tip-box {
+            background-color: rgba(217, 119, 6, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .tip-box h4 {
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .tip-box p {
+            color: var(--text-muted);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            border: 3px solid rgba(217, 119, 6, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--accent);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="loader" class="loading-state">
+            <div class="spinner"></div>
+            <p>Đang kiểm tra kết nối hệ thống...</p>
+        </div>
+
+        <div id="content" style="display: none;">
+            <div class="header">
+                <h1><i data-lucide="shield-check"></i> Chẩn Đoán Hệ Thống</h1>
+                <p>Kiểm tra trạng thái cấu hình và cơ sở dữ liệu của Album Gia Đình</p>
+            </div>
+
+            <div class="grid">
+                <!-- Database Status Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><i data-lucide="database"></i> Cơ Sở Dữ Liệu</span>
+                        <span id="dbStatus" class="status-badge">Đang kiểm tra</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-item">
+                            <span class="detail-label">Sử dụng URL kết nối:</span>
+                            <span id="dbUsingUrl" class="detail-value">-</span>
+                        </div>
+                        <div id="dbErrorContainer" style="display: none;">
+                            <div class="error-message" id="dbErrorText"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cloudinary Status Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title"><i data-lucide="image"></i> Lưu Trữ Ảnh (Cloudinary)</span>
+                        <span id="cloudStatus" class="status-badge">Đang kiểm tra</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-item">
+                            <span class="detail-label">Cloud Name:</span>
+                            <span id="cloudName" class="detail-value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">API Key:</span>
+                            <span id="cloudApiKey" class="detail-value">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">API Secret:</span>
+                            <span id="cloudApiSecret" class="detail-value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Environment Details Card -->
+                <div class="card full-width">
+                    <div class="card-header">
+                        <span class="card-title"><i data-lucide="server"></i> Môi Trường Chạy</span>
+                        <span class="status-badge success" style="background: transparent;"><i data-lucide="check-circle-2"></i> Trực Tuyến</span>
+                    </div>
+                    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; border: none; margin-bottom: 0;">
+                        <div>
+                            <div class="detail-item">
+                                <span class="detail-label">Nền tảng Vercel:</span>
+                                <span id="envVercel" class="detail-value">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Môi trường:</span>
+                                <span id="envNode" class="detail-value">-</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="detail-item">
+                                <span class="detail-label">Cổng kết nối:</span>
+                                <span id="envPort" class="detail-value">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Thời gian kiểm tra:</span>
+                                <span id="envTime" class="detail-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Troubleshooting Tip -->
+            <div id="tipBox" class="tip-box" style="margin-bottom: 2.5rem; display: none;">
+                <h4 id="tipTitle">Hướng Dẫn Khắc Phục</h4>
+                <p id="tipText"></p>
+            </div>
+
+            <div class="actions">
+                <button onclick="runDiagnostics()" class="btn"><i data-lucide="refresh-cw"></i> Kiểm tra lại</button>
+                <a href="/" class="btn btn-secondary"><i data-lucide="home"></i> Quay lại Album</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function runDiagnostics() {
+            const loader = document.getElementById('loader');
+            const content = document.getElementById('content');
+            const dbStatus = document.getElementById('dbStatus');
+            const dbUsingUrl = document.getElementById('dbUsingUrl');
+            const dbErrorContainer = document.getElementById('dbErrorContainer');
+            const dbErrorText = document.getElementById('dbErrorText');
+            
+            const cloudStatus = document.getElementById('cloudStatus');
+            const cloudName = document.getElementById('cloudName');
+            const cloudApiKey = document.getElementById('cloudApiKey');
+            const cloudApiSecret = document.getElementById('cloudApiSecret');
+
+            const envVercel = document.getElementById('envVercel');
+            const envNode = document.getElementById('envNode');
+            const envPort = document.getElementById('envPort');
+            const envTime = document.getElementById('envTime');
+
+            const tipBox = document.getElementById('tipBox');
+            const tipText = document.getElementById('tipText');
+
+            loader.style.display = 'block';
+            content.style.display = 'none';
+            tipBox.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/diagnostics');
+                if (!response.ok) {
+                    throw new Error('Không thể tải dữ liệu chẩn đoán từ máy chủ.');
+                }
+                const data = await response.json();
+
+                // DB Status
+                if (data.database.connected) {
+                    dbStatus.className = 'status-badge success';
+                    dbStatus.innerHTML = '<i data-lucide="check"></i> Đang hoạt động';
+                    dbErrorContainer.style.display = 'none';
+                } else {
+                    dbStatus.className = 'status-badge danger';
+                    dbStatus.innerHTML = '<i data-lucide="x"></i> Lỗi kết nối';
+                    dbErrorContainer.style.display = 'block';
+                    dbErrorText.innerText = data.database.error || 'Lỗi không xác định';
+                }
+                dbUsingUrl.innerText = data.database.usingUrl ? 'Có (Neon/PostgreSQL)' : 'Không (Cục bộ)';
+
+                // Cloudinary Status
+                const c = data.cloudinary;
+                cloudName.innerText = c.cloudName;
+                cloudApiKey.innerText = c.apiKey;
+                cloudApiSecret.innerText = c.apiSecret;
+
+                if (c.configured) {
+                    cloudStatus.className = 'status-badge success';
+                    cloudStatus.innerHTML = '<i data-lucide="check"></i> Đã cấu hình';
+                } else {
+                    // Check if running on Vercel
+                    if (data.env.VERCEL) {
+                        cloudStatus.className = 'status-badge danger';
+                        cloudStatus.innerHTML = '<i data-lucide="x"></i> Thiếu cấu hình';
+                    } else {
+                        cloudStatus.className = 'status-badge warning';
+                        cloudStatus.innerHTML = '<i data-lucide="alert-triangle"></i> Cục bộ (Đĩa)';
+                    }
+                }
+
+                // Environment Status
+                envVercel.innerText = data.env.VERCEL ? 'Có (Vercel Serverless)' : 'Không (Chạy cục bộ)';
+                envNode.innerText = data.env.NODE_ENV;
+                envPort.innerText = data.env.PORT;
+                envTime.innerText = new Date(data.env.timestamp).toLocaleTimeString('vi-VN') + ' ' + new Date(data.env.timestamp).toLocaleDateString('vi-VN');
+
+                // Troubleshooting Tips
+                let warnings = [];
+                if (!data.database.connected) {
+                    warnings.push('<strong>Lỗi Cơ sở dữ liệu:</strong> Vui lòng kiểm tra lại URL DATABASE_URL hoặc POSTGRES_URL trên Vercel / file .env. Đảm bảo dịch vụ Neon DB đang hoạt động.');
+                }
+                if (!c.configured && data.env.VERCEL) {
+                    warnings.push('<strong>Thiếu Cloudinary trên Vercel:</strong> Chạy trên Vercel bắt buộc phải dùng Cloudinary để lưu trữ ảnh (vì Vercel Serverless có hệ thống tập tin chỉ đọc). Hãy vào <strong>Vercel Dashboard -> Settings -> Environment Variables</strong> để thêm 3 biến: <code>CLOUDINARY_CLOUD_NAME</code>, <code>CLOUDINARY_API_KEY</code>, và <code>CLOUDINARY_API_SECRET</code>.');
+                }
+
+                if (warnings.length > 0) {
+                    tipBox.style.display = 'block';
+                    tipText.innerHTML = warnings.join('<br><br>');
+                }
+
+                loader.style.display = 'none';
+                content.style.display = 'block';
+                
+                // Re-initialize icons
+                lucide.createIcons();
+
+            } catch (err) {
+                loader.innerHTML = `
+                    <div class="status-badge danger" style="padding: 1rem; border-radius: 8px; display: inline-flex; margin-bottom: 1rem;">
+                        <i data-lucide="alert-octagon"></i> Lỗi kết nối
+                    </div>
+                    <p style="color: var(--danger); font-weight: 500;">${err.message}</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Hãy chắc chắn rằng backend server đang chạy tại cổng được cấu hình (3000) và ứng dụng đã deploy đúng cách.</p>
+                    <div class="actions" style="margin-top: 2rem;">
+                        <button onclick="runDiagnostics()" class="btn"><i data-lucide="refresh-cw"></i> Thử lại</button>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+        }
+
+        // Run on load
+        window.addEventListener('DOMContentLoaded', () => {
+            runDiagnostics();
+        });
+    </script>
+</body>
+</html>

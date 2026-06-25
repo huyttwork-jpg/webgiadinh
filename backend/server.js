@@ -98,6 +98,31 @@ const upload = multer({
   }
 });
 
+// Middleware wrapper to validate Cloudinary environment variables on Vercel and handle Multer errors safely
+const uploadMiddleware = (req, res, next) => {
+  const isCloudinaryConfigured = !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET);
+  if (process.env.VERCEL && !isCloudinaryConfigured) {
+    return res.status(400).json({
+      error: 'Cấu hình lưu trữ chưa hoàn tất. Vui lòng thiết lập các biến môi trường Cloudinary (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET) trên Vercel Dashboard để cho phép tải lên hình ảnh.'
+    });
+  }
+  
+  upload.single('photo')(req, res, (err) => {
+    if (err) {
+      console.error('Lỗi tải ảnh (Multer wrapper):', err);
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ error: 'Kích thước tệp quá lớn. Tối đa cho phép là 5MB.' });
+        }
+        return res.status(400).json({ error: `Lỗi tải tệp: ${err.message}` });
+      }
+      return res.status(400).json({ error: err.message || 'Lỗi xử lý tệp tải lên.' });
+    }
+    next();
+  });
+};
+
+
 // ── API ROUTES ──
 
 // --- 1. AUTH ---
@@ -486,7 +511,7 @@ app.get('/api/photos', async (req, res) => {
 });
 
 // Add photo
-app.post('/api/photos', authenticateToken, upload.single('photo'), async (req, res) => {
+app.post('/api/photos', authenticateToken, uploadMiddleware, async (req, res) => {
   try {
     const { title, description, category } = req.body;
     
@@ -854,6 +879,47 @@ app.get('/api/stats', async (req, res) => {
     console.error('Lỗi lấy thống kê:', error);
     res.status(500).json({ error: 'Lỗi tải dữ liệu thống kê.' });
   }
+});
+
+// Diagnostics endpoint
+app.get('/api/diagnostics', async (req, res) => {
+  const diagnostics = {
+    env: {
+      NODE_ENV: process.env.NODE_ENV || 'development',
+      VERCEL: !!process.env.VERCEL,
+      PORT: PORT,
+      timestamp: new Date().toISOString()
+    },
+    database: {
+      connected: false,
+      error: null,
+      usingUrl: !!(process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.STORAGE_URL)
+    },
+    cloudinary: {
+      configured: !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET),
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME ? 'Configured' : 'Missing',
+      apiKey: process.env.CLOUDINARY_API_KEY ? 'Configured' : 'Missing',
+      apiSecret: process.env.CLOUDINARY_API_SECRET ? 'Configured' : 'Missing'
+    }
+  };
+
+  try {
+    await query('SELECT 1');
+    diagnostics.database.connected = true;
+  } catch (err) {
+    diagnostics.database.error = err.message;
+  }
+
+  res.json(diagnostics);
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled server error:', err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Đã xảy ra lỗi hệ thống.',
+    details: process.env.NODE_ENV !== 'production' ? err.stack : undefined
+  });
 });
 
 // Catch-all route to serve index.html for frontend SPA routing
